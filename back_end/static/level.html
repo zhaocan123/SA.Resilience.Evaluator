@@ -1,0 +1,172 @@
+<!--
+	此示例下载自 https://echarts.apache.org/examples/zh/editor.html?c=graph-life-expectancy&code=CQOg5gpgLgFASgeQQFQPoAUCCyASACAajwHIB6AEwEMpLTKBne6C62gGwEsAzCAWggAeABwgBjGgDtRATxAAregHsJxADR4uAVylQOyvDABOlAO4ARVgEo8AbwBQePKOX0oeJoY4R6eALx4AbQBdAG4HPGNzVhBnbV1vEC5FQwBRSlEACxgtHT0JA1iJKENpa3tHR2cJVzwqGj8I0wsaEA8vehAAW0ohbO1xPINpCEpDZsoy8IqnFzcOKAhOhuHR8cSONgXDPtz9GHnFyenpw2hNQ3yDzoCAZiC_X39C4ukw47wAX0sAgAZQqYqpyg53y5XeeDYlAARhA2AAuWwA970DKKEwIghXAIAFnuAFI8AAmH4PfwkgBk5MIWNxeAAfHgAIwATmxP1USOOQkU9HmeQRxCgiiExE5jg-HPBeEWQgyDA49ARYKlkJh8MRUumKLRCOKmggYoqH0NEsNEkonQgCJpQUl4IAbpQ2PrrQtOpyPm8jZYvY5HYYIRwJABrHz-OqULo9HYDPZXdQccgCI7HIEgjXgpTnURWvCJgR2940QyQKDWpOEJke32fH0Azghjrc3p1rUQTwJISaFEwZUVc2WhHPEqFipQaQiAVgYyytSc5zJchB6gQADK0lciwFolGC15lAkhPIc_eEYREdHjgboYR1_ol-l5Eg686UMU6oCxAkyggahIo0MNFiFtTkICfNdpFfd9Vw4AAvXMAFYHzYCBIAkcgcEUe12wAGSDYMES4J0mGQoM13HFClUNZw2GSAUAGIbiY0V3lNd4rlXCjcz7aY30Mch2wAdUTKAMgRRkH0cPiBMMABhd86JIRjmI9ZDoVhKipRoxTiGUm4T3BbleV0ZQBU8MAMigFjjjY456Egt82Bg-DxPZTkDw4boTIkMxYUoaRCP6byDHzFN3jTC48wrAAqJkfh-GtxQBL4vRS8JhWC_w-3tBVNCdABZHpNLs1F0Q0YiIAfTogwRNz3m6ARXLq44l0tap-SraZbKvVCIHQ4rpjPRoohaZ52gfJgUPEMD8sUASBV5CQwBQgyTg4Cyyzin5ktHadEwGioUK4Tbmt4xQoCFTpaofKoaCDHD1PVPVKs5IUhARAAObautHARMAEBUDscbUyqItgSNeidc2IR1nV_HaAWkf7AYzLVSsIiqHyDbDDCYOFnofcdJxIWH9VWip6B3Si8GehHpiFd830a1GKh4ahzm4w0IwALUURQrtsY1WLpioeb5gWeJpqGBSDXkBOs8VRzabwEWV-hwk9cJOmkWS5UMKBWmgBAhG8mAMryOsUqAA
+	⚠ 请注意，该图表不是 Apache ECharts 官方示例，而是由用户代码生成的。请注意鉴别其内容。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN" style="height: 100%">
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body style="height: 100%; margin: 0">
+  <div id="container" style="height: 100%"></div>
+
+  <script type="text/javascript" src="./static/jquery.js"></script>
+  <script type="text/javascript" src="./static/echarts.min.js"></script>
+  <!-- Uncomment this line if you want to dataTool extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.2/dist/extension/dataTool.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to use gl extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to echarts-stat extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to use map
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/china.js"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+  -->
+  <!-- Uncomment these two lines if you want to use bmap extension
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=YOUR_API_KEY"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.2/dist/extension/bmap.min.js"></script>
+  -->
+  <script type="text/javascript" src="static/layer.js"></script>
+  <script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+    var option;
+    serise = [{
+      type: 'graph',
+      z: 2,
+      coordinateSystem: 'cartesian2d',
+      data: layer_graph["data"],
+      links: layer_graph["links"],
+      edgeSymbol: ['none', 'arrow'],
+      edgeSymbolSize: 5,
+      legendHoverLink: false,
+      lineStyle: {
+        color: '#333'
+      },
+      itemStyle: {
+        borderWidth: 1,
+        borderColor: '#333'
+      },
+      label: {
+        color: '#333',
+        position: 'right'
+      },
+      symbolSize: 10,
+      animationDelay: function (idx) {
+        return idx * 100;
+      }
+    }, {
+      type: 'graph',
+      coordinateSystem: 'cartesian2d',
+      data: layer_graph["layer_data"],
+      z: 1,
+      links: [],
+      edgeSymbol: ['none', 'arrow'],
+      edgeSymbolSize: 5,
+      legendHoverLink: false,
+      lineStyle: {
+        color: '#333'
+      },
+      itemStyle: {
+        borderWidth: 1,
+        borderColor: '#333'
+      },
+      label: {
+        color: '#333',
+        position: 'right'
+      },
+      symbolSize: 10,
+      animationDelay: function (idx) {
+        return idx * 100;
+      }
+    }];
+    option = {
+      visualMap: {
+        show: false,
+        min: 0,
+        max: 100,
+        dimension: 1
+      },
+      grid: {
+        left: 0,
+        bottom: 0,
+        containLabel: true,
+        top: 80
+      },
+      xAxis: {
+        show: false,
+        type: 'value',
+        min: -1,
+        max: 5,
+      },
+      yAxis: {
+        show: false,
+        type: 'value',
+        scale: true,
+        min: -1,
+        max: 5,
+      },
+      toolbox: {
+        feature: {
+          dataZoom: {}
+        }
+      },
+      dataZoom: {
+        type: 'inside'
+      },
+      series: serise
+    };
+    myChart.setOption(option);
+    window.addEventListener('resize', myChart.resize);
+  </script>
+
+
+  <script>
+    // 不变的代码，计算图和节点基本信息, 直接包含在模板当中
+    myChart.on('click', function (params) {
+
+      //window.parent.postMessage(params.data.name, '*');
+      if (params.dataType == 'node') {
+        console.log("点击节点")
+        // 点击节点
+        // 判断该节点的类别是否为组件
+        info = {}
+        console.log(params.data.name);
+        info["type"] = params.data.node_type
+        if (params.data.node_type == "comp") {
+          info["组件id"] = params.data.name
+          info["包含函数"] = params.data.funcs
+          info["函数个数"] = params.data.funcs_num
+        }
+        else {
+          info["当前层次"] = params.data.name
+          info["组件个数"] = params.data.comp_nums
+        }
+        console.log(info)
+        window.parent.postMessage({ flag: "node", data: info }, '*');
+      }
+    });
+
+    graph_info = {}
+    // 计算当前图基本信息：
+    // 节点个数
+    graph_info["节点个数"] = option.series[0].data.length
+    // 边个数
+    graph_info["边个数"] = option.series[0].links.length
+    // 层次个数
+    graph_info["层数"] = option.series[1].data.length
+
+    window.parent.postMessage({ flag: "graph", data: graph_info }, '*');
+  </script>
+</body>
+
+</html>

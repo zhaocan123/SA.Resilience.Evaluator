@@ -1,0 +1,147 @@
+<!--
+ Copyright (c) 2015 Mountainstorm
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+-->
+<!DOCTYPE html>
+<html style="height:100%">
+
+<head>
+    <link rel="stylesheet" href="static/dot_file_to_html/src/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/dot_file_to_html/src/css/graphviz.svg.css">
+</head>
+
+<style>
+    #instructions {
+        color: #fcfcfc;
+        position: absolute;
+        z-index: 100;
+        bottom: 0px;
+        left: 0px;
+    }
+</style>
+
+<body style="height:100%">
+    <div id="graph" style="width:99%;height:99%;float:left;margin:2px; overflow: scroll;"></div>
+
+    <script type="text/javascript" src="static/dot_file_to_html/src/js/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript" src="static/dot_file_to_html/src/js/jquery.mousewheel.min.js"></script>
+    <script type="text/javascript" src="static/dot_file_to_html/src/js/jquery.color.js"></script>
+    <script type="text/javascript" src="static/dot_file_to_html/src/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="static/dot_file_to_html/src/js/jquery.graphviz.svg.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#graph").graphviz({
+                url: "static/sdg.svg",
+                ready: function () {
+                    var gv = this;
+                    // 显示当前图信息
+                    // console.log(gv.nodes())
+                    // console.log(gv.edges().length)
+                    // number_of_edges = document.getElementById("number_of_edges")
+                    graph_info = {}
+                    graph_info["边个数："] = gv.edges().length
+                    filter_num = 0
+                    sink_num = 0
+                    pump_num = 0
+                    max_in_num = -1
+                    max_in_node = "None"
+                    max_out_num = -1
+                    max_out_node = "None"
+                    for (var i = 0; i < gv.nodes().length; i++) {
+                        node_name = $(gv.nodes()[i]).attr("data-name")
+                        node_text = $(gv.nodes()[i]).children("text").text()
+                        filter_num += 1
+                        in_num = 0
+                        out_num = 0
+                        for (var j = 0; j < gv.edges().length; j++) {
+                            in_match = node_name + "->"
+                            edge_text = $(gv.edges()[j]).attr('data-name')
+                            if (edge_text.startsWith(in_match)) {
+                                out_num += 1
+                            }
+                            out_match = "->" + node_name
+                            if (edge_text.endsWith(out_match)) {
+                                in_num += 1
+                            }
+                        }
+                        // console.log(node_text, in_num, out_num)
+                        if (in_num > max_in_num) {
+                            max_in_num = in_num
+                            max_in_node = node_text.slice(node_text.lastIndexOf(":") + 1)
+                        }
+                        if (out_num > max_out_num) {
+                            max_out_num = out_num
+                            max_out_node = node_text.slice(node_text.lastIndexOf(":") + 1)
+                        }
+                    }
+                    graph_info["最大入度："] = max_in_node + "(" + max_in_num + ")"
+                    graph_info["最大出度："] = max_out_node + "(" + max_out_num + ")"
+                    graph_info["节点个数："] = filter_num
+                    window.parent.postMessage({ flag: "graph", data: graph_info }, "*")
+                    gv.nodes().click(function () {
+                        // var $set = $(this);
+                        // $set.push(this);
+                        // $set = $set.add(gv.linkedFrom(this, true));
+                        // $set = $set.add(gv.linkedTo(this, true));
+                        // gv.highlight($set, true);
+                        // gv.bringToFront($set);
+                        node_info = {}
+                        // 显示当前节点信息
+                        node_text = $(this).children("text").text()
+                        node_info["节点名称："] = node_text.slice(node_text.lastIndexOf(":") + 1)
+
+                        // node_info["节点所在文件："] = "节点所在文件：" + node_text.slice(node_text.indexOf(":") + 1, node_text.lastIndexOf(":"))
+
+                        // 出度和入度
+                        in_num = 0
+                        out_num = 0
+                        node_id = $(this).attr('data-name')
+                        for (var j = 0; j < gv.edges().length; j++) {
+                            in_match = node_id + "->"
+                            edge_text = $(gv.edges()[j]).attr('data-name')
+                            if (edge_text.startsWith(in_match)) {
+                                out_num += 1
+                            }
+                            out_match = "->" + node_id
+                            if (edge_text.endsWith(out_match)) {
+                                in_num += 1
+                            }
+                        }
+                        node_info["出度："] = out_num
+                        node_info["入度："] = in_num
+                        // node_call_num = document.getElementById("node_call_num")
+                        // node_call_num.innerHTML = "出度：" + out_num
+                        // node_called_num = document.getElementById("node_called_num")
+                        // node_called_num.innerHTML = "入度：" + in_num
+
+                        window.parent.postMessage({ flag: "node", data: node_info }, "*")
+                    });
+                    $(document).keydown(function (evt) {
+                        if (evt.keyCode == 27) {
+                            gv.highlight();
+                        }
+                    })
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

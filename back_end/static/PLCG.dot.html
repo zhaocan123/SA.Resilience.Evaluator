@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html style="height:100%">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Awesome-pyecharts</title>
+    <script type="text/javascript" src="./static/echarts.min.js"></script>
+    <script src="./static/PLCG.js"></script>
+
+
+</head>
+
+<body style="height:100%">
+    <!-- <div id="Info_window" style="width:24%;height:99%;float:right;border:1px solid #000;margin:2px">
+        <div id="Graph_info" style="width:99%;height:59%;border:1px dashed #000;margin:2px">
+            <section style="width:95%;height:99%;margin:5px">
+                <article>
+                  <h1>图基本信息</h1>
+                  <p id="number_of_nodes">节点个数：</p>
+                  <p id="number_of_edges">边个数：</p>
+                  <p id="number_of_custom_functions">用户定义函数个数：</p>
+                  <p id="number_of_lib_functions">库函数个数：</p>
+                  <p id="number_of_unrecognized_functions">未识别函数个数：</p>
+                  <p id="max_in_degree">最大入度：</p>
+                  <p id="max_out_degree">最大出度：</p>
+                  <p id="max_call_depth">最大调用深度：</p>
+                  <p id="min_call_depth">最小调用深度：</p>
+                </article>
+              </section>
+        </div>
+        <div id="Node_info" style="width:99%;height:39%;border:1px dashed #000;margin:2px">
+            <section style="width:95%;height:99%;margin:5px">                
+                <article>
+                  <h1>当前节点信息</h1>
+                  <p id="node_name">节点名称：</p>
+                  <p id="node_path">函数位置：</p>
+                  <p id="node_cat">函数类型：</p>
+                  <p id="node_call_num">出度：</p>
+                  <p id="node_called_num">入度：</p>
+                </article>
+              </section>
+        </div>
+    </div> -->
+    <!-- <div id="Graph_Intro" style="width:74%;height:14%;float:left;border:1px solid #000;margin:2px;">
+        <section style="width:95%;height:19%;margin:5px">                
+            <article>
+              <h2>过程级调用图</h2>
+              <p id="intro_text">在过程级调用图(PLCG)中，每个节点表示C程序中的一个函数，边表示函数之间的调用关系。</p>
+            </article>
+          </section>
+    </div> -->
+    <div id=chart_container_div style="width:100%;height:100%;float:left;margin:2px">
+        <div id="My_chart" class="chart-container" style="width:100%; height:100%; "></div>
+        <script>
+            var chart_My_chart = echarts.init(
+                document.getElementById('My_chart'), 'white', { renderer: 'canvas' });
+
+            var cate = []
+            // 
+            cate = graph.categories.map(function (a) { return a.name })
+            console.log(cate)
+
+            var option_My_chart = {
+                "animation": true,
+                "animationThreshold": 2000,
+                "animationDuration": 1000,
+                "animationEasing": "cubicOut",
+                "animationDelay": 0,
+                "animationDurationUpdate": 300,
+                "animationEasingUpdate": "cubicOut",
+                "animationDelayUpdate": 0,
+                "aria": {
+                    "enabled": false
+                },
+                "color": [
+                    "tomato",
+                    "royalblue",
+                    "sandybrown",
+                    "red",
+                    "pink"
+                ],
+                "series": [
+                    {
+                        "type": "graph",
+                        "layout": "force",
+                        "symbolSize": 10,
+                        "circular": {
+                            "rotateLabel": false
+                        },
+                        "force": {
+                            "repulsion": 1000,
+                            "gravity": 0.2,
+                            "edgeLength": 30,
+                            "friction": 0.05,
+                            "layoutAnimation": true
+                        },
+                        "label": {
+                            "show": true,
+                            "margin": 8
+                        },
+                        "lineStyle": {
+                            "show": true,
+                            "width": 1,
+                            "opacity": 1,
+                            "curveness": 0.2,
+                            "type": "solid",
+                            "color": "source"
+                        },
+                        "roam": true,
+                        "draggable": true,
+                        "focusNodeAdjacency": true,
+                        "data": graph.data,
+                        "categories": graph.categories,
+                        "edgeLabel": {
+                            "show": false,
+                            "margin": 8
+                        },
+                        "edgeSymbol": [
+                            "",
+                            "arrow"
+                        ],
+                        "edgeSymbolSize": 8,
+                        "links": graph.links
+                    }
+                ],
+                "legend": [
+                    {
+                        "data": cate,
+                        "selected": {},
+                        "show": true,
+                        "right": "right",
+                        "orient": "vertical",
+                        "padding": 5,
+                        "itemGap": 10,
+                        "itemWidth": 25,
+                        "itemHeight": 14,
+                        "backgroundColor": "transparent",
+                        "borderColor": "#ccc",
+                        "borderWidth": 1,
+                        "borderRadius": 0,
+                        "pageButtonItemGap": 5,
+                        "pageButtonPosition": "end",
+                        "pageFormatter": "{current}/{total}",
+                        "pageIconColor": "#2f4554",
+                        "pageIconInactiveColor": "#aaa",
+                        "pageIconSize": 15,
+                        "animationDurationUpdate": 800,
+                        "selector": false,
+                        "selectorPosition": "auto",
+                        "selectorItemGap": 7,
+                        "selectorButtonGap": 10
+                    }
+                ],
+                "tooltip": {
+                    "show": true,
+                    "trigger": "item",
+                    "triggerOn": "mousemove|click",
+                    "axisPointer": {
+                        "type": "line"
+                    },
+                    "showContent": true,
+                    "alwaysShowContent": false,
+                    "showDelay": 0,
+                    "hideDelay": 100,
+                    "enterable": false,
+                    "confine": false,
+                    "appendToBody": false,
+                    "transitionDuration": 0.4,
+                    "position": "inside",
+                    "formatter": function (params) { return params.data.des; },
+                    "textStyle": {
+                        "fontSize": 14
+                    },
+                    "borderWidth": 0,
+                    "padding": 5,
+                    "order": "seriesAsc"
+                },
+                "title": [
+                    {
+                        "show": true,
+                        "target": "blank",
+                        "subtarget": "blank",
+                        "padding": 5,
+                        "itemGap": 10,
+                        "textAlign": "auto",
+                        "textVerticalAlign": "auto",
+                        "triggerEvent": false
+                    }
+                ]
+            };
+            chart_My_chart.setOption(option_My_chart);
+            window.addEventListener('resize', function () {
+                chart_My_chart.resize();
+            })
+        </script>
+    </div>
+
+    <script>
+        // 不变的代码，计算图和节点基本信息, 直接包含在模板当中
+        chart_My_chart.on('mouseup', function (params) {
+            if (params.dataType == 'node') {
+                var option = chart_My_chart.getOption();
+                option.series[0].data[params.dataIndex].x = params.event.offsetX;
+                option.series[0].data[params.dataIndex].y = params.event.offsetY;
+                option.series[0].data[params.dataIndex].fixed = true;
+                chart_My_chart.setOption(option);
+            }
+        });
+        chart_My_chart.on('click', function (params) {
+            console.log("点击节点")
+            //window.parent.postMessage(params.data.name, '*');
+            if (params.dataType == 'node') {
+                // 点击节点
+                // 判断该节点的类别是否为组件
+                info = {}
+                console.log(params.data.name);
+                current_node_name = document.getElementById("node_name")
+                info["节点名称"] = params.data.name
+                //current_node_name.innerHTML = "节点名称：" + params.data.name;
+                current_node_path = document.getElementById("node_path")
+                // 获取函数位置，为id从开始到最后一个冒号
+                info["函数位置"] = params.data.file
+                current_node_node_cat = document.getElementById("node_cat")
+                node_cat_text = ""
+                if (params.data.category == 0) {
+                    node_cat_text = "C语言函数"
+                }
+                if (params.data.category == 1) {
+                    node_cat_text = "C++函数"
+                }
+                //current_node_node_cat.innerHTML = "节点类型: " + node_cat_text;
+                info["节点类型"] = node_cat_text
+
+                current_node_call_numbers = document.getElementById("node_call_num")
+                //current_node_call_numbers.innerHTML = "出度：" + params.data.call_node_nums;
+                // 统计该节点未被隐藏的子节点个数
+                child_node_count = 0
+                // 获取该节点的所有子节点
+                for (var i = 0; i < option_My_chart.series[0].links.length; i++) {
+                    if (option_My_chart.series[0].links[i].source == params.data.id && option_My_chart.series[0].links[i].lineStyle.normal.opacity == 1) {
+                        // 该节点为子节点
+                        // 判断该节点是否被隐藏
+                        for (var j = 0; j < option_My_chart.series[0].data.length; j++) {
+                            if (option_My_chart.series[0].data[j].id == option_My_chart.series[0].links[i].target) {
+                                // 该节点未被隐藏
+                                if (option_My_chart.series[0].data[j].itemStyle.normal.opacity == 1) {
+                                    child_node_count += 1
+                                }
+                            }
+                        }
+                    }
+                }
+                info["出度"] = child_node_count
+                current_node_called_numbers = document.getElementById("node_called_num")
+                //current_node_called_numbers.innerHTML = "入度：" + params.data.called_node_nums;
+                // 统计该节点未被隐藏的父节点个数
+                parent_node_count = 0
+                // 获取该节点的所有父节点
+                for (var i = 0; i < option_My_chart.series[0].links.length; i++) {
+                    if (option_My_chart.series[0].links[i].target == params.data.id && option_My_chart.series[0].links[i].lineStyle.normal.opacity == 1) {
+                        // 该节点为父节点
+                        // 判断该节点是否被隐藏
+                        for (var j = 0; j < option_My_chart.series[0].data.length; j++) {
+                            if (option_My_chart.series[0].data[j].id == option_My_chart.series[0].links[i].source) {
+                                // 该节点未被隐藏
+                                if (option_My_chart.series[0].data[j].itemStyle.normal.opacity == 1) {
+                                    parent_node_count += 1
+                                }
+                            }
+                        }
+                    }
+                }
+                info["入度"] = parent_node_count
+                console.log(info)
+                window.parent.postMessage({ flag: "func_node", data: info }, '*');
+            }
+        });
+
+        graph_info = {}
+        // 计算当前图基本信息：
+        // 节点个数
+        graph_node_numbers = document.getElementById("number_of_nodes")
+        //graph_node_numbers.innerHTML = "节点个数：" + option_My_chart.series[0].data.length
+        // 统计未被隐藏的节点个数
+        node_count = 0
+        for (var i = 0; i < option_My_chart.series[0].data.length; i++) {
+            if (option_My_chart.series[0].data[i].itemStyle.normal.opacity == 1) {
+                node_count += 1;
+            }
+        }
+        graph_info["节点个数"] = node_count
+        // 边个数
+        graph_egde_numbers = document.getElementById("number_of_edges")
+        //graph_egde_numbers.innerHTML = "边个数: " + option_My_chart.series[0].links.length
+        // 统计未被隐藏的边个数
+        edge_count = 0
+        for (var i = 0; i < option_My_chart.series[0].links.length; i++) {
+            if (option_My_chart.series[0].links[i].lineStyle.normal.opacity == 1) {
+                edge_count += 1;
+            }
+        }
+        graph_info["边个数"] = edge_count
+        // C语言函数个数
+        c_node_count = 0
+        for (var i = 0; i < option_My_chart.series[0].data.length; i++) {
+            console.log(option_My_chart.series[0].data[i].itemStyle)
+            if (option_My_chart.series[0].data[i].category == 0 && option_My_chart.series[0].data[i].itemStyle.normal.opacity == 1) {
+                c_node_count += 1;
+            }
+        }
+        graph_info["C语言函数个数"] = c_node_count
+        // C++函数个数
+        CPP_node_count = 0
+        for (var i = 0; i < option_My_chart.series[0].data.length; i++) {
+            // 类别为1 且 节点未被隐藏
+            if (option_My_chart.series[0].data[i].category == 1 && option_My_chart.series[0].data[i].itemStyle.normal.opacity == 1) {
+                CPP_node_count += 1;
+            }
+        }
+        lib_node_numbers = document.getElementById("number_of_lib_functions")
+        //lib_node_numbers.innerHTML = "库函数个数：" + lib_node_count
+        graph_info["C++函数个数"] = CPP_node_count
+
+        graph_info["最大入度函数"] = graph.maxInFunc
+        graph_info["最大出度函数"] = graph.maxOutFunc
+
+        graph_info["最大调用深度"] = graph.maxCallPath.length
+        graph_info["最小调用深度"] = graph.minCallPath.length
+
+        console.log(graph_info)
+        window.parent.postMessage({ flag: "func_graph", data: graph_info }, '*');
+    </script>
+
+</body>
+
+</html>

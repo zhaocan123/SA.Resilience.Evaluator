@@ -1,0 +1,252 @@
+
+node: start
+type: start_node
+object: TODO
+comp: TODO
+end node
+
+node: statement1
+type: statement_node
+object: TODO
+comp: TODO
+end node
+
+node: statement2
+type: statement_node
+object: TODO
+comp: TODO
+end node
+
+node: sign in
+type: action_node
+object: IDandPassword
+comp: Front_end
+end node
+
+node: add info into database
+type: send_node
+object: IDandPassword
+comp: Front_end
+end node
+
+node: database handle sign in
+type: action_node
+object: IDandPassword, signinResult
+comp: Li, UserDatabase
+end node
+
+node: receive sign in result from database
+type: receive_node
+object: signinResult
+comp: Front_end
+end node
+
+node: statement3
+type: statement_node
+object: signinResult
+comp: TODO
+end node
+
+node: log in
+type: action_node
+object: IDandPassword
+comp: Front_end, Li
+end node
+
+node: look items
+type: action_node
+object: TODO
+comp: Front_end
+end node
+
+node: add item to wishlist
+type: action_node
+object: itemInfo
+comp: Front_end
+end node
+
+node: send request to database
+type: send_node
+object: itemInfo
+comp: Front_end
+end node
+
+node: database handle request
+type: action_node
+object: itemInfo
+comp: ProductDatabase, Inquire, Shopping, Management
+end node
+
+node: receive item info from database
+type: receive_node
+object: itemInfo
+comp: Front_end
+end node
+
+node: statement4
+type: statement_node
+object: itemInfo
+comp: TODO
+end node
+
+node: failed to order
+type: action_node
+object: TODO
+comp: Front_end
+end node
+
+node: statement5
+type: statement_node
+object: TODO
+comp: TODO
+end node
+
+node: choose pay method
+type: action_node
+object: TODO
+comp: Front_end
+end node
+
+node: call third-part purchase platform
+type: send_node
+object: TODO
+comp: Front_end, Pay
+end node
+
+node: third-part purchase platform handle request
+type: action_node
+object: payResult
+comp: Pay
+end node
+
+node: receive result
+type: receive_node
+object: payResult
+comp: Front_end, Pay
+end node
+
+node: statement6
+type: statement_node
+object: payResult
+comp: TODO
+end node
+
+node: successfully paid
+type: action_node
+object: payResult
+comp: Front_end
+end node
+
+node: add new order info into database
+type: send_node
+object: orderInfo
+comp: Front_end, Order
+end node
+
+node: database handle new order
+type: action_node
+object: orderInfo, orderResult
+comp: OrderDatabase, Order
+end node
+
+node: receive order result from database
+type: receive_node
+object: orderResult
+comp: Front_end
+end node
+
+node: statement7
+type: statement_node
+object: TODO
+comp: TODO
+end node
+
+node: failed to pay
+type: action_node
+object: payResult
+comp: Front_end
+end node
+
+node: statement8
+type: statement_node
+object: TODO
+comp: TODO
+end node
+
+node: statement9
+type: statement_node
+object: TODO
+comp: TODO
+end node
+
+node: stop
+type: end_node
+object: TODO
+comp: TODO
+end node
+
+link: statement2 -> sign in
+
+link: sign in -> add info into database
+
+link: add info into database -> database handle sign in
+
+link: database handle sign in -> receive sign in result from database
+
+link: start -> statement1
+
+link: start -> statement2
+
+link: statement1 -> statement3
+
+link: receive sign in result from database -> statement3
+
+link: statement3 -> log in
+
+link: log in -> look items
+
+link: look items -> add item to wishlist
+
+link: add item to wishlist -> send request to database
+
+link: send request to database -> database handle request
+
+link: database handle request -> receive item info from database
+
+link: statement4 -> failed to order
+
+link: statement5 -> choose pay method
+
+link: choose pay method -> call third-part purchase platform
+
+link: call third-part purchase platform -> third-part purchase platform handle request
+
+link: third-part purchase platform handle request -> receive result
+
+link: statement6 -> successfully paid
+
+link: successfully paid -> add new order info into database
+
+link: add new order info into database -> database handle new order
+
+link: database handle new order -> receive order result from database
+
+link: statement7 -> failed to pay
+
+link: receive result -> statement7
+
+link: receive result -> statement6
+
+link: receive order result from database -> statement8
+
+link: failed to pay -> statement8
+
+link: receive item info from database -> statement5
+
+link: receive item info from database -> statement4
+
+link: statement8 -> statement9
+
+link: failed to order -> statement9
+
+link: statement9 -> stop

@@ -1,0 +1,5 @@
+i;;$$int;;/temp_grad/back_end_app/back_end/test1/test/test_array_01.c:3:17;;/temp_grad/back_end_app/back_end/test1/test/test_array_01.c:3:9
+i;;$$int;;/temp_grad/back_end_app/back_end/test1/test/test_array_01.c:3:22;;/temp_grad/back_end_app/back_end/test1/test/test_array_01.c:3:9
+a;;$$int[10];;/temp_grad/back_end_app/back_end/test1/test/test_array_01.c:4:9;;/temp_grad/back_end_app/back_end/test1/test/test_array_01.c:2:5
+i;;$$int;;/temp_grad/back_end_app/back_end/test1/test/test_array_01.c:4:11;;/temp_grad/back_end_app/back_end/test1/test/test_array_01.c:3:9
+i;;$$int;;/temp_grad/back_end_app/back_end/test1/test/test_array_01.c:4:16;;/temp_grad/back_end_app/back_end/test1/test/test_array_01.c:3:9

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html style="height:100%">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Awesome-pyecharts</title>
+    <script type="text/javascript" src="./static/echarts.min.js"></script>
+    <script src="static/callback.js"></script>
+
+
+</head>
+
+<body style="height:100%">
+
+    <!-- <div id="Info_window" style="width:24%;height:99%;float:right;border:1px solid #000;margin:2px">
+        <div id="Graph_info" style="width:99%;height:49%;border:1px dashed #000;margin:2px">
+            <section style="width:95%;height:99%;margin:5px">
+                <article>
+                  <h1>图基本信息</h1>
+                  <p id="number_of_comps">组件个数：</p>
+                  <p id="number_of_funcs">总函数个数：</p>
+                  <p id="max_in_degree">最大入度：</p>
+                  <p id="max_out_degree">最大出度：</p>
+                  <p id="total_data_depends">数据依赖总数：</p>
+                  <p id="total_control_depends">控制依赖总数：</p>
+                </article>
+              </section>
+        </div>
+        <div id="Node_info" style="width:99%;height:49%;border:1px dashed #000;margin:2px">
+            <section style="width:95%;height:99%;margin:5px">                
+                <article>
+                  <h1>当前节点信息</h1>
+                  <p id="node_name">节点名称：</p>
+                  <p id="node_type">节点类型：</p>
+                  <p id="node_call_num">出度：</p>
+                  <p id="node_called_num">入度：</p>
+                  <p id="node_func_num">包含函数个数：</p>
+                </article>
+              </section>
+        </div>
+    </div> -->
+    <!-- <div id="Graph_Intro" style="width:74%;height:22%;float:left;border:1px solid #000;margin:2px;">
+        <section style="width:95%;height:99%;margin:5px">                
+            <article>
+              <h2>系统架构依赖图</h2>
+              <p id="intro_text">系统架构图是在系统依赖图的基础上恢复的，图中的节点是系统中的组件，组件是由一组紧密关联的函数组成，边表示组件之间的依赖关系。它提供了系统组件架构的简明描述，以协助组件与组件之间的关系和系统的运作。系统架构图是软件架构的一个可视化表示，可以清晰地表示系统中不同组件之间的关系，以便系统设计者和软件工程师更好地了解系统的架构。</p>
+            </article>
+          </section>
+    </div> -->
+    <div id=chart_container_div style="width:99%;height:99%;margin:2px">
+        <div id="My_chart" class="chart-container" style="width:100%; height:100%; "></div>
+        <script>
+            var chart_My_chart = echarts.init(
+                document.getElementById('My_chart'), 'white', { renderer: 'canvas' });
+            var cate = []
+            // 
+            cate = comp.categories.map(function (a) { return a.name })
+            console.log(cate)
+            var option_My_chart = {
+                "animation": true,
+                "animationThreshold": 2000,
+                "animationDuration": 1000,
+                "animationEasing": "cubicOut",
+                "animationDelay": 0,
+                "animationDurationUpdate": 300,
+                "animationEasingUpdate": "cubicOut",
+                "animationDelayUpdate": 0,
+                "aria": {
+                    "enabled": false
+                },
+                "color": comp.color,
+                "series": [
+                    {
+                        "type": "graph",
+                        "layout": "force",
+                        "symbolSize": 10,
+                        "circular": {
+                            "rotateLabel": false
+                        },
+                        "force": {
+                            "repulsion": 4000,
+                            "gravity": 0.2,
+                            "edgeLength": 30,
+                            "friction": 0.05,
+                            "layoutAnimation": true
+                        },
+                        "label": {
+                            "show": true,
+                            "margin": 8
+                        },
+                        "lineStyle": {
+                            "show": true,
+                            "width": 1,
+                            "opacity": 1,
+                            "curveness": 0.2,
+                            "type": "solid",
+                            "color": "source"
+                        },
+                        "roam": true,
+                        "draggable": true,
+                        "focusNodeAdjacency": true,
+                        "data": comp.data,
+                        "categories": comp.categories,
+                        "edgeLabel": {
+                            "show": false,
+                            "margin": 8
+                        },
+                        "edgeSymbol": [
+                            "",
+                            "arrow"
+                        ],
+                        "edgeSymbolSize": 8,
+                        "links": comp.links
+                    }
+                ],
+                // "legend": [
+                //     {
+                //         "data": cate,
+                //         "selected": {},
+                //         "show": true,
+                //         "right": "right",
+                //         "orient": "vertical",
+                //         "padding": 5,
+                //         "itemGap": 10,
+                //         "itemWidth": 25,
+                //         "itemHeight": 14,
+                //         "backgroundColor": "transparent",
+                //         "borderColor": "#ccc",
+                //         "borderWidth": 1,
+                //         "borderRadius": 0,
+                //         "pageButtonItemGap": 5,
+                //         "pageButtonPosition": "end",
+                //         "pageFormatter": "{current}/{total}",
+                //         "pageIconColor": "#2f4554",
+                //         "pageIconInactiveColor": "#aaa",
+                //         "pageIconSize": 15,
+                //         "animationDurationUpdate": 800,
+                //         "selector": false,
+                //         "selectorPosition": "auto",
+                //         "selectorItemGap": 7,
+                //         "selectorButtonGap": 10
+                //     }
+                // ],
+                "tooltip": {
+                    "show": false,
+                    "trigger": "item",
+                    "triggerOn": "none",
+                    "axisPointer": {
+                        "type": "line"
+                    },
+                    "showContent": true,
+                    "alwaysShowContent": true,
+                    "showDelay": 0,
+                    //"hideDelay": 100,
+                    "enterable": false,
+                    "confine": false,
+                    "appendToBody": false,
+                    "transitionDuration": 0.4,
+                    "position": "inside",
+                    "formatter": function (params) { return params.data.des; },
+                    "textStyle": {
+                        "fontSize": 14
+                    },
+                    "borderWidth": 0,
+                    "padding": 5,
+                    "order": "seriesAsc"
+                },
+                "title": [
+                    {
+                        "show": true,
+                        "target": "blank",
+                        "subtarget": "blank",
+                        "padding": 5,
+                        "itemGap": 10,
+                        "textAlign": "auto",
+                        "textVerticalAlign": "auto",
+                        "triggerEvent": false
+                    }
+                ]
+            };
+            chart_My_chart.setOption(option_My_chart);
+            window.addEventListener('resize', function () {
+                chart_My_chart.resize();
+            })
+        </script>
+    </div>
+
+
+    <script>
+        // 不变的代码，拖动后固定，展开和合并节点
+        chart_My_chart.on('mouseup', function (params) {
+            if (params.dataType == 'node') {
+                var option = chart_My_chart.getOption();
+                option.series[0].data[params.dataIndex].x = params.event.offsetX;
+                option.series[0].data[params.dataIndex].y = params.event.offsetY;
+                option.series[0].data[params.dataIndex].fixed = true;
+                chart_My_chart.setOption(option);
+            }
+        });
+        chart_My_chart.on('dblclick', function (params) {
+            if (params.dataType == 'node') {
+                // 点击节点
+
+                console.log(params.data.name);
+
+                //获得当前节点的类别
+                var category = params.data.category;
+                //获得当前节点的comp
+                var comp = params.data.comp;
+
+                //隐藏所有category和comp相同的节点
+                var nodes = option_My_chart["series"][0]["data"];
+                var links = option_My_chart["series"][0]["links"];
+
+                for (var i = 0; i < nodes.length; i++) {
+                    if (nodes[i].category == category && nodes[i].comp == comp) {
+                        // 隐藏节点
+                        nodes[i].itemStyle.normal.opacity = 0;
+                        // 隐藏节点的连线
+                        for (var j = 0; j < links.length; j++) {
+                            if (links[j].source == nodes[i].id || links[j].target == nodes[i].id) {
+                                links[j].lineStyle.normal.opacity = 0;
+                            }
+                        }
+                    }
+                }
+
+                //显示所有category相同，comp不同的节点
+                for (var i = 0; i < nodes.length; i++) {
+                    if (nodes[i].category == category && nodes[i].comp != comp) {
+                        // 显示节点
+                        nodes[i].itemStyle.normal.opacity = 1;
+                        console.log(nodes[i].name);
+                        // 显示节点的连线
+                        for (var j = 0; j < links.length; j++) {
+                            if (links[j].source == nodes[i].id || links[j].target == nodes[i].id) {
+                                source = links[j].source;
+                                target = links[j].target;
+                                source_node = null;
+                                target_node = null;
+                                // 判断连线的两个节点是否都在显示状态
+                                for (var k = 0; k < nodes.length; k++) {
+                                    if (nodes[k].id == source) {
+                                        source_node = nodes[k];
+                                    }
+                                    if (nodes[k].id == target) {
+                                        target_node = nodes[k];
+                                    }
+
+                                    if (source_node != null && target_node != null) {
+                                        break;
+                                    }
+                                }
+
+                                if (source_node.itemStyle.normal.opacity == 1 && target_node.itemStyle.normal.opacity == 1) {
+                                    links[j].lineStyle.normal.opacity = 1;
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                // 重新加载图表
+                //chart_My_chart.clear();
+
+                console.log("重新渲染");
+                chart_My_chart.setOption(option_My_chart, true, true, true);
+
+            }
+        });
+    </script>
+    <script>
+        // 不变的代码，计算图和节点基本信息, 直接包含在模板当中
+        chart_My_chart.on('click', function (params) {
+            if (params.dataType == 'node') {
+                //获得当前节点的类别
+                var category = params.data.category;
+                //获得当前节点的comp
+                var comp = params.data.comp;
+
+                names = ""
+                if (comp == 1) {
+                    names += "组件内函数："
+                    var nodes = option_My_chart["series"][0]["data"];
+                    // 将所有函数的名字存储在names中，以换行符分隔
+                    for (var i = 0; i < nodes.length; i++) {
+                        if (nodes[i].category == category && nodes[i].comp == 0) {
+                            names += nodes[i].name + "(); ";
+                        }
+                    }
+                }
+                else {
+                    names += "函数名称："
+                    names += params.data.name + "()"
+                }
+                // console.log(params.data);
+                if (params.data.itemStyle.opacity == 1) {
+                    // 点击节点
+                    // 判断该节点的类别是否为组件
+                    node_info = {}
+                    node_info["节点名称："] = names;
+                    if (params.data.comp == 1) {
+                        node_type = "组件"
+                    }
+                    else {
+                        node_type = "函数"
+                    }
+                    node_info["节点类型："] = node_type;
+                    if (params.data.comp == 1) {
+                        func_count = 0
+                        var nodes = option_My_chart["series"][0]["data"];
+                        // 计算组件内函数的个数
+                        for (var i = 0; i < nodes.length; i++) {
+                            if (nodes[i].category == category && nodes[i].comp == 0) {
+                                func_count += 1;
+                            }
+                        }
+                        // current_node_function_numbers.innerHTML = "包含函数个数：" + func_count;
+                        node_info["包含函数个数："] = func_count;
+                    }
+                    else {
+                        node_info["包含函数个数："] = "1";
+                    }
+                    // 计算出度
+                    out_degree = 0
+                    for (var i = 0; i < option_My_chart.series[0].links.length; i++) {
+                        if (option_My_chart.series[0].links[i].lineStyle.normal.opacity == 1) {
+                            if (option_My_chart.series[0].links[i].source == params.data.id) {
+                                out_degree += 1;
+                            }
+                        }
+                    }
+                    node_info["出度："] = out_degree;
+                    // 计算入度
+                    in_degree = 0
+                    for (var i = 0; i < option_My_chart.series[0].links.length; i++) {
+                        if (option_My_chart.series[0].links[i].lineStyle.normal.opacity == 1) {
+                            if (option_My_chart.series[0].links[i].target == params.data.id) {
+                                in_degree += 1;
+                            }
+                        }
+                    }
+                    node_info["入度："] = in_degree;
+                    console.log(node_info);
+                    window.parent.postMessage({ flag: "node", data: node_info }, "*")
+                }
+
+            }
+
+        });
+
+        // 计算当前图基本信息：
+        // // 节点个数
+        // graph_node_numbers = document.getElementById("number_of_nodes")
+        // graph_node_numbers.innerHTML = "节点个数：" + option_My_chart.series[0].data.length
+        // // 边个数
+        // graph_egde_numbers = document.getElementById("number_of_edges")
+        // graph_egde_numbers.innerHTML = "边个数: " + option_My_chart.series[0].links.length
+        // 组件个数
+        graph_info = {}
+        comp_node_count = 0
+        for (var i = 0; i < option_My_chart.series[0].data.length; i++) {
+            if (option_My_chart.series[0].data[i].comp == 1) {
+                comp_node_count += 1;
+            }
+        }
+        graph_info["组件个数："] = comp_node_count
+        // 函数个数
+        func_node_count = 0
+        for (var i = 0; i < option_My_chart.series[0].data.length; i++) {
+            if (option_My_chart.series[0].data[i].comp == 0) {
+                func_node_count += 1;
+            }
+        }
+        graph_info["总函数个数："] = func_node_count
+        // 控制依赖个数
+        control_edge_count = 0
+        for (var i = 0; i < option_My_chart.series[0].links.length; i++) {
+            if (option_My_chart.series[0].links[i].lineStyle.normal.type == "solid") {
+                control_edge_count += 1;
+            }
+        }
+        graph_info["控制依赖总数："] = control_edge_count
+        // 数据依赖个数
+        data_edge_count = 0
+        console.log()
+        for (var i = 0; i < option_My_chart.series[0].links.length; i++) {
+            if (option_My_chart.series[0].links[i].lineStyle.normal.type == "dotted") {
+                data_edge_count += 1;
+            }
+        }
+        graph_info["数据依赖总数："] = data_edge_count
+        // 最大出度
+        max_out_num = -1
+        max_out_comp = "None"
+        for (var i = 0; i < option_My_chart.series[0].data.length; i++) {
+            if (option_My_chart.series[0].data[i].comp == 1) {
+                out_num = 0
+                for (var j = 0; j < option_My_chart.series[0].links.length; j++) {
+                    if (option_My_chart.series[0].links[j].lineStyle.normal.opacity == 1) {
+                        if (option_My_chart.series[0].links[j].source == option_My_chart.series[0].data[i].id) {
+                            out_num += 1;
+                        }
+                    }
+                }
+                if (out_num > max_out_num) {
+                    max_out_num = out_num
+                    max_out_comp = option_My_chart.series[0].data[i].name
+                }
+            }
+        }
+        graph_info["最大出度："] = max_out_comp + max_out_num
+
+        // 最大入度
+        max_in_num = -1
+        max_in_comp = "None"
+        for (var i = 0; i < option_My_chart.series[0].data.length; i++) {
+            if (option_My_chart.series[0].data[i].comp == 1) {
+                in_num = 0
+                for (var j = 0; j < option_My_chart.series[0].links.length; j++) {
+                    if (option_My_chart.series[0].links[j].lineStyle.normal.opacity == 1) {
+                        if (option_My_chart.series[0].links[j].target == option_My_chart.series[0].data[i].id) {
+                            in_num += 1;
+                        }
+                    }
+                }
+                if (in_num > max_in_num) {
+                    max_in_num = in_num
+                    max_in_comp = option_My_chart.series[0].data[i].name
+                }
+            }
+        }
+        graph_info["最大入度："] = max_in_comp + max_in_num
+        window.parent.postMessage({ flag: "graph", data: graph_info }, "*")
+    </script>
+
+</body>
+
+</html>

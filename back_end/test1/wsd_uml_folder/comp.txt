@@ -1,0 +1,192 @@
+
+node: Front_end
+type: component
+resilience: TODO
+performance: TODO
+end node
+
+node: Li
+type: component
+resilience: TODO
+performance: TODO
+end node
+
+node: Order
+type: component
+resilience: TODO
+performance: TODO
+end node
+
+node: Inquire
+type: component
+resilience: TODO
+performance: TODO
+end node
+
+node: Shopping
+type: component
+resilience: TODO
+performance: TODO
+end node
+
+node: Management
+type: component
+resilience: TODO
+performance: TODO
+end node
+
+node: UserDatabase
+type: component
+resilience: 0.99
+performance: TODO
+end node
+
+node: ProductDatabase
+type: component
+resilience: 0.99
+performance: TODO
+end node
+
+node: OrderDatabase
+type: component
+resilience: 0.99
+performance: TODO
+end node
+
+node: Pay
+type: component
+resilience: TODO
+performance: TODO
+end node
+
+node: HTTPS
+type: interface
+resilience: TODO
+performance: 0.2
+end node
+
+node: UserDataBaseAPi
+type: interface
+resilience: 0.99
+performance: 0.2
+end node
+
+node: ProductDataBaseAPi
+type: interface
+resilience: 0.99
+performance: 0.2
+end node
+
+node: OrderDataBaseAPi
+type: interface
+resilience: 0.99
+performance: 0.2
+end node
+
+link: 
+type: depend
+node1: Front_end
+node2: HTTPS
+end link
+
+link: 
+type: provide
+node1: HTTPS
+node2: Li
+end link
+
+link: 
+type: provide
+node1: HTTPS
+node2: Inquire
+end link
+
+link: 
+type: provide
+node1: HTTPS
+node2: Shopping
+end link
+
+link: 
+type: provide
+node1: HTTPS
+node2: Order
+end link
+
+link: 
+type: depend
+node1: Order
+node2: Shopping
+end link
+
+link: 
+type: depend
+node1: Inquire
+node2: Li
+end link
+
+link: 
+type: depend
+node1: Shopping
+node2: Inquire
+end link
+
+link: 
+type: depend
+node1: Shopping
+node2: Pay
+end link
+
+link: 
+type: depend
+node1: Shopping
+node2: Management
+end link
+
+link: 
+type: depend
+node1: Li
+node2: UserDataBaseAPi
+end link
+
+link: 
+type: depend
+node1: Inquire
+node2: ProductDataBaseAPi
+end link
+
+link: 
+type: depend
+node1: Shopping
+node2: OrderDataBaseAPi
+end link
+
+link: 
+type: depend
+node1: Management
+node2: OrderDataBaseAPi
+end link
+
+link: 
+type: depend
+node1: Order
+node2: OrderDataBaseAPi
+end link
+
+link: 
+type: provide
+node1: UserDatabase
+node2: UserDataBaseAPi
+end link
+
+link: 
+type: provide
+node1: ProductDatabase
+node2: ProductDataBaseAPi
+end link
+
+link: 
+type: provide
+node1: OrderDatabase
+node2: OrderDataBaseAPi
+end link

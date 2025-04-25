@@ -1,0 +1,196 @@
+<!--
+ Copyright (c) 2015 Mountainstorm
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+-->
+<!DOCTYPE html>
+<html style="height:100%">
+	<head>
+		<link rel="stylesheet" href="static/dot_file_to_html/src/css/bootstrap.min.css">
+		<link rel="stylesheet" href="static/dot_file_to_html/src/css/graphviz.svg.css">
+	</head>
+
+	<style>
+        #instructions {
+            color: #fcfcfc;
+            position: absolute;
+            z-index: 100;
+            bottom: 0px;
+            left: 0px;
+        }
+    </style>
+	<body style="height:100%">
+		<!-- <h4 id="instructions">Click node to highlight; Shift-scroll to zoom; Esc to unhighlight</h4>
+		<div id="Info_window" style="width:24%;height:99%;float:right;border:1px solid #000;margin:2px">
+            <div id="Graph_info" style="width:99%;height:49%;border:1px dashed #000;margin:2px">
+                <section style="width:95%;height:99%;margin:5px">
+                    <article>
+                      <h1>图基本信息</h1>
+                      <p id="number_of_nodes">过滤器个数：</p>
+                      <p id="number_of_edges">管道个数：</p>
+                      <p id="number_of_data_ins">数据入口个数：</p>
+                      <p id="number_of_data_outs">数据出口个数：</p>
+                      <p id="max_in_degree">最大入度：</p>
+                      <p id="max_out_degree">最大出度：</p>
+                    </article>
+                  </section>
+            </div>
+            <div id="Node_info" style="width:99%;height:49%;border:1px dashed #000;margin:2px">
+                <section style="width:95%;height:99%;margin:5px">                
+                    <article>
+                      <h1>当前节点信息</h1>
+                      <p id="node_name">节点名称：</p>
+                      <p id="node_type">节点类型：</p>
+                      <p id="node_call_num">出度：</p>
+                      <p id="node_called_num">入度：</p>
+                      <p id="node_path">节点所在文件：</p>
+                    </article>
+                  </section>
+            </div>
+        </div>
+        <div id="Graph_Intro" style="width:74%;height:14%;float:left;border:1px solid #000;margin:2px;">
+            <section style="width:95%;height:99%;margin:5px">                
+                <article>
+                  <h2>管道过滤器风格架构图</h2>
+                  <p id="intro_text">过滤器和管道体系结构风格为处理数据流的系统提供了一种结构。每个处理步骤封装在一个过滤器组件中。数据通过相邻过滤器之间的管道传输。每个过滤器有一组输入端和输出端。一个过滤器从输入端读取数据流,通过本地转换和渐增计算,向输出端输出数据流。管道充当数据流的通道,将一个过滤器的输出端连接到另一个过滤器的输入端。</p>
+                </article>
+              </section>
+        </div> -->
+        <div id="graph" style="width:99%;height:99%;float:left;margin:2px; overflow: scroll;"></div>
+
+		<script type="text/javascript" src="static/dot_file_to_html/src/js/jquery-2.1.3.min.js"></script>
+		<script type="text/javascript" src="static/dot_file_to_html/src/js/jquery.mousewheel.min.js"></script>
+		<script type="text/javascript" src="static/dot_file_to_html/src/js/jquery.color.js"></script>
+		<script type="text/javascript" src="static/dot_file_to_html/src/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="static/dot_file_to_html/src/js/jquery.graphviz.svg.js"></script>
+		<script type="text/javascript">
+ 			$(document).ready(function(){
+                $("#graph").graphviz({
+                    url: "static/pipe_filter.svg",
+                    ready: function() {
+                        var gv = this;
+                        // 显示当前图信息
+                        // console.log(gv.nodes())
+                        // console.log(gv.edges().length)
+                        // number_of_edges = document.getElementById("number_of_edges")
+                        graph_info = {}
+                        graph_info["管道个数："] = gv.edges().length
+                        filter_num = 0
+                        sink_num = 0
+                        pump_num = 0
+                        max_in_num = -1
+                        max_in_node = "None"
+                        max_out_num = -1
+                        max_out_node = "None"
+                        for(var i = 0; i< gv.nodes().length; i++){
+                            node_name = $(gv.nodes()[i]).attr("data-name")
+                            node_text = $(gv.nodes()[i]).children("text").text()
+                            if(node_text == "Sink"){ sink_num += 1
+                            }
+                            else if (node_text == "Pump"){ pump_num += 1
+                            }
+                            else{ filter_num += 1
+                            }
+                            in_num = 0
+                            out_num = 0
+                            for(var j = 0; j < gv.edges().length; j++){
+                                in_match = node_name + "->"
+                                edge_text = $(gv.edges()[j]).attr('data-name')
+                                if(edge_text.startsWith(in_match)){
+                                    out_num  += 1
+                                }
+                                out_match = "->" + node_name
+                                if(edge_text.endsWith(out_match)){
+                                    in_num  += 1
+                                }
+                            }
+                            // console.log(node_text, in_num, out_num)
+                            if(in_num > max_in_num){
+                                max_in_num = in_num
+                                max_in_node = node_text.slice(node_text.lastIndexOf(":") + 1)
+                            }
+                            if(out_num > max_out_num){
+                                max_out_num = out_num
+                                max_out_node = node_text.slice(node_text.lastIndexOf(":") + 1)
+                            }
+                        }
+                        graph_info["最大入度："] = max_in_node + "(" + max_in_num + ")"
+                        graph_info["最大出度："] = max_out_node + "(" + max_out_num + ")"
+                        graph_info["过滤器个数："] = filter_num
+                        graph_info["数据入口个数："] = pump_num
+                        graph_info["数据出口个数："] = sink_num
+                        window.parent.postMessage({flag:"graph",data:graph_info},"*")
+                        gv.nodes().click(function () {
+                            // var $set = $(this);
+                            // $set.push(this);
+                            // $set = $set.add(gv.linkedFrom(this, true));
+                            // $set = $set.add(gv.linkedTo(this, true));
+                            // gv.highlight($set, true);
+                            // gv.bringToFront($set);
+                            node_info = {}
+                            // 显示当前节点信息
+                            node_text =  $(this).children("text").text()
+                            node_info["节点名称："] = node_text.slice(node_text.lastIndexOf(":") + 1)
+                            if(node_text == "Sink"){
+                                node_info["节点所在文件："] = ""
+                                node_info["节点类型："] = "节点类型：数据出口"
+                            }
+                            else if (node_text == "Pump"){
+                                node_info["节点所在文件："]  = ""
+                                node_info["节点类型："]  = "节点类型：数据入口"
+                            }
+                            else{
+                                node_info["节点所在文件："] = "节点所在文件：" + node_text.slice(node_text.indexOf(":") + 1, node_text.lastIndexOf(":"))
+                                node_info["节点类型："]  = "节点类型：过滤器"
+                            }
+                            // 出度和入度
+                            in_num = 0
+                            out_num = 0
+                            node_id = $(this).attr('data-name')
+                            for(var j = 0; j < gv.edges().length; j++){
+                                in_match = node_id + "->"
+                                edge_text = $(gv.edges()[j]).attr('data-name')
+                                if(edge_text.startsWith(in_match)){
+                                    out_num  += 1
+                                }
+                                out_match = "->" + node_id
+                                if(edge_text.endsWith(out_match)){
+                                    in_num  += 1
+                                }
+                            }
+                            node_info["出度："] =out_num
+                            node_info["入度："] =in_num
+                            // node_call_num = document.getElementById("node_call_num")
+                            // node_call_num.innerHTML = "出度：" + out_num
+                            // node_called_num = document.getElementById("node_called_num")
+                            // node_called_num.innerHTML = "入度：" + in_num
+                            
+                            window.parent.postMessage({flag:"node",data:node_info},"*")
+                        });
+                        $(document).keydown(function (evt) {
+                            if (evt.keyCode == 27) {
+                                gv.highlight();
+                            }
+                        })
+                    }
+                });
+            });
+		</script>
+	</body>
+</html>

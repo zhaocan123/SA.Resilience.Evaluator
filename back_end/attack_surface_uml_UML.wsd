@@ -1,0 +1,75 @@
+@startuml
+class Node {
+    __repr__()
+        name
+    resilience
+    __init__()
+}
+class ComponentNode {
+    __repr__()
+        reliability
+    __init__()
+}
+class ActivityNode {
+    __repr__()
+        type
+    comps
+    reliability
+    __init__()
+}
+class Link {
+    __repr__()
+        name
+    type
+    node1
+    node2
+    direction
+    __init__()
+}
+class Diagram {
+    find_node_by_name()
+    get_node_index()
+    get_adjency_matrix()
+        name
+    __init__()
+}
+class ComponentDiagram {
+    read_from_wsd_text()
+    _process_plantUML()
+        __init__()
+}
+class ActivityDiagram {
+    read_from_wsd_text()
+    _process_plantUML()
+        __init__()
+}
+class ActivityUMLNode {
+    __repr__()
+        name
+    call
+    __init__()
+}
+class ActivityUMLDiagram {
+    find_node()
+    add_links()
+    read_from_text()
+    read_from_file()
+        __init__()
+}
+class AttackSurface {
+    attack_surface_detection()
+    generate_possible_attacks()
+    attack_surface_resilience()
+    generate_attack_graph()
+    deal_project()
+        entry_points
+    exit_points
+    untrusted_items
+    channels
+    __init__()
+}
+Node <|-- ComponentNode
+Node <|-- ActivityNode
+Diagram <|-- ComponentDiagram
+Diagram <|-- ActivityDiagram
+@enduml

@@ -1,0 +1,41 @@
+@startuml online shopping sys
+title online shopping sys
+|browser|
+start
+if (have account) then (yes)
+else(no)
+:sign in;
+:add info into database>
+|server|
+:database handle sign in;
+|browser|
+:receive sign in result from database<
+endif
+:log in;
+:look items;
+:add item to wishlist;
+:send request to database>
+|server|
+:database handle request;
+|browser|
+:receive item info from database<
+if (not enough items) then (yes)
+    :failed to order;
+else(no)
+    :choose pay method;
+    :call third-part purchase platform>
+    :third-part purchase platform handle request;
+    :receive result<
+if (successfully paid) then(yes)
+:successfully paid;
+:add new order info into database>
+|server|
+:database handle new order;
+|browser|
+:receive order result from database<
+else(no)
+:failed to pay;
+endif
+endif
+stop
+@enduml
